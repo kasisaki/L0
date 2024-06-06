@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -42,6 +43,11 @@ func New() Service {
 	dbInstance = &service{
 		db: db,
 	}
+
+	err = runSQLScript(db)
+	if err != nil {
+		return nil
+	}
 	return dbInstance
 }
 
@@ -57,4 +63,17 @@ func (s *service) Health() map[string]string {
 	return map[string]string{
 		"message": "It's healthy",
 	}
+}
+
+func runSQLScript(db *sql.DB) error {
+	sqlBytes, err := os.ReadFile(filepath.Join("schema.sql"))
+	if err != nil {
+		return err
+	}
+
+	if _, err := db.Exec(string(sqlBytes)); err != nil {
+		return err
+	}
+
+	return nil
 }
