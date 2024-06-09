@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Order Info</title>
+</head>
+<body>
+<h1>Enter Order ID:</h1>
+<input type="text" id="orderId">
+<button onclick="getOrderInfo()">Get Order Info</button>
+<div id="orderInfo"></div>
+
+<script>
+    function getOrderInfo() {
+        const orderId = document.getElementById('orderId').value;
+        const url = `http://localhost:8080/order?id=${orderId}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const orderInfo = JSON.stringify(data, null, 4);
+                document.getElementById('orderInfo').innerText = orderInfo;
+            })
+            .catch(error => {
+                document.getElementById('orderInfo').innerText = 'Error fetching order info';
+                console.error('Error:', error);
+            });
+    }
+</script>
+
+<h1>Enter Order ID:</h1>
+<input type="text" id="ending">
+<button onclick="getOrderInfo()">Get by link ending</button>
+<div id="infoByEnding"></div>
+
+<script>
+    function getOrderInfo() {
+        const ending = document.getElementById('ending').value;
+        const url = `http://localhost:8080/${ending}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const dataInfo = JSON.stringify(data, null, 4);
+                document.getElementById('infoByEnding').innerText = dataInfo;
+            })
+            .catch(error => {
+                document.getElementById('infoByEnding').innerText = 'Error fetching data';
+                console.error('Error:', error);
+            });
+    }
+</script>
+</body>
+</html>

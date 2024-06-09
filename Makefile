@@ -1,5 +1,5 @@
 # Simple Makefile for a Go project
-
+include .env
 # Build the application
 all: build
 
@@ -20,6 +20,15 @@ docker-run:
 		echo "Falling back to Docker Compose V1"; \
 		docker-compose up; \
 	fi
+
+# Get the container IP
+get-container-ip:
+	$(eval DB_HOST := $(shell docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(CONTAINER_NAME)))
+
+# Init the DB
+docker-initdb: get-container-ip
+	@echo "Initializing DB with container IP: $(DB_HOST)"
+	@docker exec -i $(CONTAINER_NAME) psql -h $(DB_HOST) -p $(DB_PORT) -d $(DB_DATABASE) -U $(DB_USERNAME) < internal/database/schema.sql
 
 # Shutdown DB container
 docker-down:

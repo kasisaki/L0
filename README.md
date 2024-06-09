@@ -28,6 +28,11 @@ Create DB container
 make docker-run
 ```
 
+Initialise DB with script
+````bash
+make docker-initdb:
+````
+
 Shutdown DB container
 ```bash
 make docker-down

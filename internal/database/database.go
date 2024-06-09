@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -69,6 +70,15 @@ func runSQLScript(db *sql.DB) error {
 	sqlBytes, err := os.ReadFile(filepath.Join("schema.sql"))
 	if err != nil {
 		return err
+	}
+
+	requests := strings.Split(string(sqlBytes), ";\n")
+
+	for _, request := range requests {
+		_, err := db.Exec(request)
+		if err != nil {
+			log.Fatalf("DATABASE setup completed with an error: %s\n", err)
+		}
 	}
 
 	if _, err := db.Exec(string(sqlBytes)); err != nil {
