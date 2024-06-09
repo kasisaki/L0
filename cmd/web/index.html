@@ -14,7 +14,7 @@
 <script>
     function getOrderInfo() {
         const orderId = document.getElementById('orderId').value;
-        const url = `http://localhost:8080/order?id=${orderId}`;
+        const url = `http://localhost:8080/api/orders?order_uid=${orderId}`;
 
         fetch(url)
             .then(response => response.json())
@@ -29,13 +29,13 @@
     }
 </script>
 
-<h1>Enter Order ID:</h1>
+<h1>Link test:</h1>
 <input type="text" id="ending">
-<button onclick="getOrderInfo()">Get by link ending</button>
+<button onclick="getLinkInfo()">Get by link ending</button>
 <div id="infoByEnding"></div>
 
 <script>
-    function getOrderInfo() {
+    function getLinkInfo() {
         const ending = document.getElementById('ending').value;
         const url = `http://localhost:8080/${ending}`;
 

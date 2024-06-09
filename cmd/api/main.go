@@ -1,7 +1,7 @@
 package main
 
 import (
-	"L0_2/internal/server"
+	"L0/internal/server"
 	"fmt"
 )
 

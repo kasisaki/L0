@@ -16,6 +16,7 @@ import (
 
 type Service interface {
 	Health() map[string]string
+	Db() *sql.DB
 }
 
 type service struct {
@@ -47,15 +48,18 @@ func New() Service {
 
 	err = runSQLScript(db)
 	if err != nil {
-		return nil
+		fmt.Println("Error running script")
+		log.Fatal(err)
 	}
 	return dbInstance
 }
 
 func (s *service) Health() map[string]string {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
-	defer cancel()
-
+	defer func() {
+		fmt.Println("Calling context cancel")
+		cancel()
+	}()
 	err := s.db.PingContext(ctx)
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("db down: %v", err))
@@ -66,8 +70,12 @@ func (s *service) Health() map[string]string {
 	}
 }
 
+func (s *service) Db() *sql.DB {
+	return dbInstance.db
+}
+
 func runSQLScript(db *sql.DB) error {
-	sqlBytes, err := os.ReadFile(filepath.Join("schema.sql"))
+	sqlBytes, err := os.ReadFile(filepath.Join("internal/database/schema.sql"))
 	if err != nil {
 		return err
 	}

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS orders
     entry              VARCHAR(10),
     delivery_info      JSONB,
     payment_info       JSONB,
+    items_info         JSONB,
     locale             VARCHAR(10),
     internal_signature VARCHAR(255),
     customer_id        VARCHAR(50),
@@ -15,15 +16,4 @@ CREATE TABLE IF NOT EXISTS orders
     oof_shard          VARCHAR(10)
 );
 
-
-CREATE TABLE IF NOT EXISTS order_items
-(
-    id        SERIAL PRIMARY KEY,
-    order_uid VARCHAR(255) REFERENCES orders (order_uid),
-    item_info JSONB
-);
-
-
 CREATE INDEX IF NOT EXISTS idx_orders_order_uid ON orders(order_uid);
-CREATE INDEX IF NOT EXISTS idx_order_items_order_uid ON order_items(order_uid);
-
