@@ -78,8 +78,11 @@ func (s *Server) HandlePostOrderById(w http.ResponseWriter, r *http.Request) {
 		err = db.InsertOrder(s.Db.Db(), order)
 
 		if err != nil {
-			log.Fatalf(err.Error())
+			log.Println(err.Error())
+			HandleGetError(w, err)
+			return
 		}
+		HandleNormalResponse(w, "Data saved")
 	}
 }
 
