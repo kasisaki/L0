@@ -4,11 +4,16 @@ import (
 	db "L0/internal/database"
 	mod "L0/internal/models"
 	"bytes"
+	"database/sql"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"log"
 	"net/http"
+	"sync"
 )
+
+var wg *sync.WaitGroup
+var inMemory = db.NewInMemory()
 
 func (s *Server) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]string)
@@ -43,15 +48,15 @@ func (s *Server) healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) HandleGetOrderById(w http.ResponseWriter, req *http.Request) {
+
 	if req.Method == http.MethodGet {
 		id := req.URL.Query().Get("order_uid")
-
-		order, err := db.GetOrderById(s.Db.Db(), id)
-		if HandleGetError(w, err) {
+		wg.Add(1)
+		if order, ok := inMemory.Get(id, wg); ok {
+			HandleNormalResponse(w, order)
 			return
 		}
-
-		HandleNormalResponse(w, order)
+		HandleGetError(w, sql.ErrNoRows)
 		return
 	}
 }
@@ -73,11 +78,17 @@ func (s *Server) HandlePostOrderById(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		fmt.Println(order.ToString())
-
+		if _, present := inMemory.Get(order.OrderUID, wg); present {
+			HandleError(w, http.StatusConflict, errors.New("заказ с таким uid есть в базе"))
+			return
+		}
+		wg.Add(1)
+		go inMemory.Save(order, wg)
 		err = db.InsertOrder(s.Db.Db(), order)
 
 		if err != nil {
+			wg.Add(1)
+			go inMemory.Remove(order.OrderUID, wg)
 			log.Println(err.Error())
 			HandleGetError(w, err)
 			return

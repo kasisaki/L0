@@ -73,6 +73,7 @@ func GetOrderById(db *sql.DB, orderUID string) (*mod.Order, error) {
 	return &order, nil
 }
 
-func GetAllFromDB(db *sql.DB) ([]mod.Order, error) {
-	query := 'SELECT * from orders'
-}
+//func GetAllFromDB(db *sql.DB) ([]mod.Order, error) {
+//	query := `SELECT * from orders`
+//
+//}

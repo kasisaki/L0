@@ -23,15 +23,24 @@ func (s *InMemoryStorage) Save(order models.Order, wg *sync.WaitGroup) bool {
 	return true
 }
 
-func (s *InMemoryStorage) Get(orderUid string, wg *sync.WaitGroup) models.Order {
+func (s *InMemoryStorage) Remove(orderUid string, wg *sync.WaitGroup) bool {
 	defer wg.Done()
 
 	mu.Lock()
-	order := s.Storage[orderUid]
+	delete(s.Storage, orderUid)
 	mu.Unlock()
-	return order
+	return true
 }
 
-func (s *InMemoryStorage) New() map[string]models.Order {
+func (s *InMemoryStorage) Get(orderUid string, wg *sync.WaitGroup) (models.Order, bool) {
+	defer wg.Done()
 
+	mu.Lock()
+	order, ok := s.Storage[orderUid]
+	mu.Unlock()
+	return order, ok
+}
+
+func NewInMemory() *InMemoryStorage {
+	return &InMemoryStorage{Storage: map[string]models.Order{}}
 }
