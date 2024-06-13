@@ -11,38 +11,6 @@ import (
 	"net/http"
 )
 
-func (s *Server) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
-	resp := map[string]string{"message": "Hello World"}
-
-	jsonResp, err := json.Marshal(resp)
-	if err != nil {
-		log.Fatalf("error handling JSON marshal. Err: %v", err)
-	}
-
-	if _, err := w.Write(jsonResp); err != nil {
-		log.Printf("error writing response. Err: %v", err)
-	}
-}
-
-func (s *Server) healthHandler(w http.ResponseWriter, r *http.Request) {
-	if s.Db == nil {
-		http.Error(w, "Database connection is nil", http.StatusInternalServerError)
-		log.Println("Error: Database connection is nil")
-		return
-	}
-
-	jsonResp, err := json.Marshal(s.Db.Health())
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		log.Printf("Error marshaling JSON response: %v", err)
-		return
-	}
-
-	if _, err = w.Write(jsonResp); err != nil {
-		log.Printf("Error writing response: %v", err)
-	}
-}
-
 func (s *Server) HandleGetOrderById(w http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodGet {
 		id := req.URL.Query().Get("order_uid")

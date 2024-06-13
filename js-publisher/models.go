@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-// Delivery represents delivery information.
 type Delivery struct {
 	Name    string `json:"name"`
 	Phone   string `json:"phone"`
@@ -16,7 +15,6 @@ type Delivery struct {
 	Email   string `json:"email"`
 }
 
-// Payment represents payment information.
 type Payment struct {
 	Transaction  string `json:"transaction"`
 	RequestId    string `json:"request_id"`
@@ -30,7 +28,6 @@ type Payment struct {
 	CustomFee    int    `json:"custom_fee"`
 }
 
-// Item represents an item in an order.
 type Item struct {
 	ChrtID      int    `json:"chrt_id"`
 	TrackNumber string `json:"track_number"`
@@ -45,7 +42,6 @@ type Item struct {
 	Status      int    `json:"status"`
 }
 
-// Order represents an order.
 type Order struct {
 	OrderUID          string    `json:"order_uid"`
 	TrackNumber       string    `json:"track_number"`

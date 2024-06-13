@@ -14,8 +14,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.Handle("/*", http.StripPrefix("/", http.FileServer(http.Dir(webDir))))
 
-	r.Get("/hello", s.HelloWorldHandler)
-	r.Get("/health", s.healthHandler)
 	r.Get("/api/orders", s.HandleGetOrderById)
 	r.Post("/api/orders", s.HandlePostOrder)
 	r.Delete("/api/orders", s.HandleDeleteOrderById)

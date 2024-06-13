@@ -93,7 +93,7 @@ func (s *InMemoryStorage) MigrateBackUpToDB() {
 	}
 	migrationStarted = true
 	for {
-		time.Sleep(30 * time.Second) // Раз в 30 секунд проверяем состояние базы данных
+		time.Sleep(5 * time.Second) // Раз в 30 секунд проверяем состояние базы данных
 
 		orders, err := s.GetAllBackupOrders()
 		if err != nil {

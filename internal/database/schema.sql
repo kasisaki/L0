@@ -16,4 +16,4 @@ CREATE TABLE IF NOT EXISTS orders
     oof_shard          VARCHAR(10)
 );
 
-CREATE INDEX IF NOT EXISTS idx_orders_order_uid ON orders(order_uid);
+CREATE INDEX IF NOT EXISTS idx_orders_order_uid ON orders (order_uid);
