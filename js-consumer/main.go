@@ -20,6 +20,7 @@ func main() {
 		log.Fatalf("Error connecting to NATS: %v", err)
 	}
 	defer nc.Close()
+	log.Println(Green + "Подключение к NATS выполнено успешно" + Reset)
 
 	url := "http://localhost:8080/api/orders"
 	client := &http.Client{}
@@ -33,7 +34,7 @@ func main() {
 	// Subscribe to the stream
 	subj := "orders"
 	sub, err := js.Subscribe(subj, func(m *nats.Msg) {
-		log.Printf("%sReceived%s data of subject %s%s%s. Sending a POST request to %s ", Green, Reset, Green, Reset, subj, url)
+		log.Printf("%sReceived%s data of subject \"%s%s%s\". Sending a POST request to %s ", Green, Reset, Green, subj, Reset, url)
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(m.Data))
 		if err != nil {
 			log.Fatalf("Error creating request: %v", err)

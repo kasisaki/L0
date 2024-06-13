@@ -14,9 +14,10 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+var InMemory = NewInMemory()
+
 type Service interface {
 	Health() map[string]string
-	Db() *sql.DB
 }
 
 type service struct {
@@ -51,6 +52,15 @@ func New() Service {
 		fmt.Println("Error running script")
 		log.Fatal(err)
 	}
+
+	orders, err := FetchAllOrders(Db())
+	if err != nil {
+		log.Fatalf("Failed to fetch orders from database: %v", err)
+	}
+
+	InMemory.LoadOrders(orders)
+	log.Println("Loaded orders into in-memory storage")
+
 	return dbInstance
 }
 
@@ -62,7 +72,10 @@ func (s *service) Health() map[string]string {
 	}()
 	err := s.db.PingContext(ctx)
 	if err != nil {
-		log.Fatalf(fmt.Sprintf("db down: %v", err))
+		log.Printf(fmt.Sprintf("db down: %v", err))
+		return map[string]string{
+			"message": "DB is down",
+		}
 	}
 
 	return map[string]string{
@@ -70,7 +83,7 @@ func (s *service) Health() map[string]string {
 	}
 }
 
-func (s *service) Db() *sql.DB {
+func Db() *sql.DB {
 	return dbInstance.db
 }
 

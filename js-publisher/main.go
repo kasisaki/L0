@@ -51,12 +51,7 @@ func main() {
 		log.Printf("Stream %s already exists. Created at: %s\n", streamName, streamInfo.Created.Format(time.DateTime))
 	}
 
-	_, err = js.Publish("orders", []byte("Hello, JetStream!"))
-	if err != nil {
-		log.Fatalf("Error publishing message: %v", err)
-	}
-
-	log.Println("Message published to JetStream.")
+	log.Println(Green + "Ready to publish to JetStream." + Reset)
 
 	for {
 		fmt.Println("Generating a new random order")

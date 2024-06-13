@@ -17,7 +17,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Get("/hello", s.HelloWorldHandler)
 	r.Get("/health", s.healthHandler)
 	r.Get("/api/orders", s.HandleGetOrderById)
-	r.Post("/api/orders", s.HandlePostOrderById)
+	r.Post("/api/orders", s.HandlePostOrder)
 	r.Delete("/api/orders", s.HandleDeleteOrderById)
 
 	return r
